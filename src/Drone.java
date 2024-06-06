@@ -252,8 +252,8 @@ public class Drone {
 		info += "Vx: " + Vx + "<br>";
 		info += "Vy: "  + Vy + "<br>";
 		info += "bat: "  + df.format(batteryPercentage) + "%" +"<br>";
-//		info += "pitch: "  + df.format(pitch) + "<br>";
-//		info += "roll: " + df.format(roll) + "<br>";
+		info += "pitch: "  + df.format(pitch) + "<br>";
+		info += "roll: " + df.format(roll) + "<br>";
 		info += "accX: " + accX + "<br>";
 		info += "accY: " + accY + "<br>";
 		info += "</html>";

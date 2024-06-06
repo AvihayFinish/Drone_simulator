@@ -1,5 +1,3 @@
-
-
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,13 +6,22 @@ import java.time.Instant;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
-
-
 import javax.swing.*;
+
 
 public class SimulationWindow {
 
 	private JFrame frame;
+	public static JLabel info_label;
+	public static JLabel timeLabel;
+	public static boolean return_home = false;
+	private boolean toggleStop = true;
+	public JLabel info_label2;
+	public static boolean toggleRealMap = true;
+	public static boolean toggleAI = true;
+	public static AutoAlgo1 algo1;
+	public static Instant startTime;
+	private int Flight_Time = 8*60; //time flight is 8 min
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -33,11 +40,6 @@ public class SimulationWindow {
 		initialize();
 	}
 
-	public static JLabel info_label;
-	public static JLabel timeLabel;
-	public static boolean return_home = false;
-
-	boolean toogleStop = true;
 	private void initialize() {
 		frame = new JFrame();
 		frame.setTitle("Drone Simulator");
@@ -79,63 +81,53 @@ public class SimulationWindow {
 		main();
 	}
 
-
-	public JLabel info_label2;
-	public static boolean toogleRealMap = true;
-	public static boolean toogleAI = true;
-	
-	public static AutoAlgo1 algo1;
-
-
-	public static Instant startTime;
 	public void main() {
 		int map_num = 4;
 		Point[] startPoints = {
-				new Point(100,50),
-				new Point(50,60),
-				new Point(73,68),
-				new Point(84,73),
-				new Point(92,100)};
-		
-		Map map = new Map("C:\\Users\\בר\\OneDrive\\שולחן העבודה\\מדמח\\שנה ג\\רובוטים אוטונומים\\Matala1_Simulator_Finish\\Drone_simulator\\Maps\\p1" + map_num + ".png",startPoints[map_num-1]);
+				new Point(100, 50),
+				new Point(50, 60),
+				new Point(73, 68),
+				new Point(84, 73),
+				new Point(92, 100)};
+
+		Map map = new Map("C:\\Users\\בר\\OneDrive\\שולחן העבודה\\מדמח\\שנה ג\\רובוטים אוטונומים\\Matala1_Simulator_Finish\\Drone_simulator\\Maps\\p1" + map_num + ".png", startPoints[map_num - 1]);
 
 		algo1 = new AutoAlgo1(map);
-		
+
 		Painter painter = new Painter(algo1);
 		painter.setBounds(0, 0, 2000, 2000);
 		frame.getContentPane().add(painter);
-		
-		CPU painterCPU = new CPU(200,"painter"); // 60 FPS painter
+
+		CPU painterCPU = new CPU(200, "painter"); // 60 FPS painter
 		painterCPU.addFunction(frame::repaint);
 		painterCPU.play();
 
 		startTime = Instant.now();
 
-		CPU timerPresent = new CPU(100 , "timerPresent");
+		CPU timerPresent = new CPU(100, "timerPresent");
 		timerPresent.addFunction(this::presentTime);
 		timerPresent.play();
 
-		CPU returnHome = new CPU(100 , "returnHome");
+		CPU returnHome = new CPU(100, "returnHome");
 		returnHome.addFunction(this::actionPerformed);
 		returnHome.play();
 
 		algo1.play();
 
-		CPU updatesCPU = new CPU(60,"updates");
+		CPU updatesCPU = new CPU(60, "updates");
 		updatesCPU.addFunction(algo1.drone::update);
 		updatesCPU.play();
-		
-		CPU infoCPU = new CPU(1,"update_info");
+
+		CPU infoCPU = new CPU(1, "update_info");
 		infoCPU.addFunction(this::updateInfo);
 		infoCPU.play();
 	}
 
-
 	public void updateInfo(int deltaTime) {
 		info_label.setText(algo1.drone.getInfoHTML());
 	}
-	private void presentTime(int stam)
-	{
+
+	private void presentTime(int stam) {
 		Instant currentTime = Instant.now();
 		Duration elapsedTime = Duration.between(startTime, currentTime);
 		// Update the time label with the elapsed time
@@ -144,17 +136,17 @@ public class SimulationWindow {
 		long seconds = elapsedTime.toSecondsPart();
 		timeLabel.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
 	}
-	private void actionPerformed(int stam)
-	{
+
+	private void actionPerformed(int stam) {
 		Instant currentTime = Instant.now();
 		Duration elapsedTime = Duration.between(startTime, currentTime);
 
-		if (elapsedTime.getSeconds() > 25) {
+		if (elapsedTime.getSeconds() > Flight_Time/2) {
 			return_home = true;
 			System.out.println(elapsedTime.getSeconds());
 		}
 
-		if(return_home) {
+		if (return_home) {
 			algo1.speedDown();
 			algo1.spinBy(180, true, new Func() {
 				@Override
@@ -162,15 +154,15 @@ public class SimulationWindow {
 					algo1.speedUp();
 				}
 			});
-			while(true){
+			while (true) {
 			}
 		}
 	}
-	
+
 	public void stopCPUS() {
 		CPU.stopAllCPUS();
 	}
-	
+
 	public void resumseCPUS() {
 		CPU.stopAllCPUS();
 	}
