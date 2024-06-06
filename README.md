@@ -72,8 +72,8 @@ The following information is displayed on the screen during the simulation:
 
 ## Author
 
-Amit Rovshiz
-Shoval Zohar
-Bar Alayof
-Avihai Finish
+- Amit Rovshiz
+- Shoval Zohar
+- Bar Alayof
+- Avihai Finish
 
