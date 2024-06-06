@@ -31,6 +31,8 @@ public class Drone {
 	public List<Long> timeOfPoints;
 	private double Vx;
 	private double Vy;
+	private double accX; // X acceleration component
+	private double accY; // Y acceleration component
 
 	private CPU cpu;
 
@@ -48,6 +50,8 @@ public class Drone {
 		gyroRotation = rotation;
 		roll = 0.0;
 		pitch = 0.0;
+		accX = 0.0;
+		accY = 0.0;
 		pitchRate = 0.0; // Initialize pitch rate
 		rollRate = 0.0;  // Initialize roll rate
 		batteryPercentage = 100.0;
@@ -94,6 +98,7 @@ public class Drone {
 			timeOfPoints.remove(0);
 		}
 		updateVxVy();
+		updateAccXAccY();
 
 		double noiseToDistance = Tools.noiseBetween(WorldParams.min_motion_accuracy,WorldParams.max_motion_accuracy,false);
 		sensorOpticalFlow = Tools.getPointByDistance(sensorOpticalFlow, rotation, distancedMoved*noiseToDistance);
@@ -115,6 +120,14 @@ public class Drone {
 	private void updateVxVy () {
 		Vx = (pointList.get(1).x - pointList.get(0).x) / (timeOfPoints.get(1) - timeOfPoints.get(0));
 		Vy = (pointList.get(1).y - pointList.get(0).y) / (timeOfPoints.get(1) - timeOfPoints.get(0));
+	}
+
+	private void updateAccXAccY() {
+		double timeDiff = (timeOfPoints.get(1) - timeOfPoints.get(0)) / 1000.0;
+		if (timeDiff > 0) {
+			accX = (pointList.get(1).x - 2 * pointList.get(0).x + pointList.get(pointList.size() - 2).x) / (timeDiff * timeDiff);
+			accY = (pointList.get(1).y - 2 * pointList.get(0).y + pointList.get(pointList.size() - 2).y) / (timeDiff * timeDiff);
+		}
 	}
 
 	private void updateBatteryPercentage() {
@@ -241,8 +254,8 @@ public class Drone {
 		info += "bat: "  + df.format(batteryPercentage) + "%" +"<br>";
 //		info += "pitch: "  + df.format(pitch) + "<br>";
 //		info += "roll: " + df.format(roll) + "<br>";
-//		info += "accX: "  + "<br>";
-//		info += "accY: "  + "<br>";
+		info += "accX: " + accX + "<br>";
+		info += "accY: " + accY + "<br>";
 		info += "</html>";
 
 		return info;

@@ -59,21 +59,21 @@ public class SimulationWindow {
 
 		// Create a label to display "Running time:"
 		JLabel runningTimeLabel = new JLabel("Running time:");
-		runningTimeLabel.setBounds(screenWidth - 250, 80, 100, 30);
+		runningTimeLabel.setBounds(screenWidth - 140, screenHeight - 380, 100, 30);
 		frame.getContentPane().add(runningTimeLabel);
 
 		// Initialize the time label aligned with the right and bottom edges
 		timeLabel = new JLabel();
-		timeLabel.setBounds(screenWidth - 250, 100, 200, 30);
+		timeLabel.setBounds(screenWidth - 125, screenHeight - 360, 200, 30);
 		frame.getContentPane().add(timeLabel);
 
 		// Initialize other labels aligned with the right and bottom edges
 		info_label = new JLabel();
-		info_label.setBounds(screenWidth - 250, 100, 300, 200);
+		info_label.setBounds(screenWidth - 195, screenHeight - 400, 300, 400);
 		frame.getContentPane().add(info_label);
 
 		info_label2 = new JLabel();
-		info_label2.setBounds(screenWidth - 200, screenHeight - 250, 300, 200);
+		info_label2.setBounds(screenWidth - 195, screenHeight - 100, 300, 400);
 		frame.getContentPane().add(info_label2);
 
 		main();
@@ -97,7 +97,7 @@ public class SimulationWindow {
 				new Point(84,73),
 				new Point(92,100)};
 		
-		Map map = new Map("C:\\Users\\אביחי\\IdeaProjects\\Drone_Simulator\\Maps\\p1" + map_num + ".png",startPoints[map_num-1]);
+		Map map = new Map("C:\\Users\\בר\\OneDrive\\שולחן העבודה\\מדמח\\שנה ג\\רובוטים אוטונומים\\Matala1_Simulator_Finish\\Drone_simulator\\Maps\\p1" + map_num + ".png",startPoints[map_num-1]);
 
 		algo1 = new AutoAlgo1(map);
 		
